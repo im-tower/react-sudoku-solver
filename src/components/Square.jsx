@@ -1,8 +1,10 @@
-export default function Square({value}) {
+export default function Square({value, onClick}) {
 
     return (
-        <button className="square">
-            {value}
+        <button className="square" onClick={onClick}>
+            {
+                value === "\n" ? "" : value
+            }
         </button>
     );
 
