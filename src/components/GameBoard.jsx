@@ -1,3 +1,4 @@
+import { validateBoard } from "../features/solver";
 import Square from "./Square";
 import { useState } from "react";
 
@@ -19,6 +20,7 @@ export default function GameBoard(){
         x: 0,
         y: 0
     });
+    const [validNumbers, setValidNumbers] = useState([true, true, true, true, true, true, true, true, true]);
     const onSquareClick = (clientX, clientY, squareX, squareY) => {
         setNumbersGridVisible(true);
         setNumbersGridPosition({
@@ -29,10 +31,25 @@ export default function GameBoard(){
             x: squareX,
             y: squareY
         });
+        const newValidNumbers = [false, false, false, false, false, false, false, false, false];
+        for(let i = 1; i <= 9; i++){
+            const newBoard = [...board];
+            const previousValue = newBoard[squareY][squareX];
+            newBoard[squareY][squareX] = i;
+            if(validateBoard(newBoard)) newValidNumbers[i - 1] = true;
+            newBoard[squareY][squareX] = previousValue;
+        }
+        setValidNumbers(newValidNumbers);
     }
     const onGridNumberClick = (value) => {
         const newBoard = [...board];
-        newBoard[selectedSquare.x][selectedSquare.y] = value;
+        const previousValue = newBoard[selectedSquare.y][selectedSquare.x];
+        newBoard[selectedSquare.y][selectedSquare.x] = value;
+        if(!validateBoard(newBoard)){
+            newBoard[selectedSquare.y][selectedSquare.x] = previousValue;
+            alert("Movimiento inválido");
+            return;
+        }
         setBoard(newBoard);
         setSelectedSquare({x: 0, y: 0});
         setNumbersGridVisible(false);
@@ -44,7 +61,7 @@ export default function GameBoard(){
                     <div key={i} className="board-row">
                         {
                             Array.from(Array(9).keys()).map((j) => 
-                                <Square key={j} value={board[i][j]} onClick={({clientX, clientY}) => onSquareClick(clientX, clientY, i, j)} />
+                                <Square key={j} value={board[i][j]} onClick={({clientX, clientY}) => onSquareClick(clientX, clientY, j, i)} />
                             )
                         }
                     </div>    
@@ -60,7 +77,7 @@ export default function GameBoard(){
                 }
             >
                 {
-                    Array.from(Array(9).keys()).map((i) => <button onClick={() => onGridNumberClick(i+1)} key={i}>{i+1}</button>)
+                    validNumbers.map((available, index) => <button onClick={() => onGridNumberClick(index+1)} key={index+1} disabled={!available}>{index+1}</button>)
                 }
             </div>
         </div>
