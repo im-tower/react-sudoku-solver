@@ -30,9 +30,27 @@ export function validateSquares(board){
 }
 
 export function validateRows(board){
+    for(let row = 0; row < 9; ++row){
+        const values = new Set();
+        for(let col = 0; col < 9; ++col){
+            const value = board[row][col];
+            if(value === "") continue;
+            if(values.has(value)) return false;
+            else values.add(value);
+        }
+    }
     return true;
 }
 
 export function validateColumns(board){
+    for(let col = 0; col < 9; ++col){
+        const values = new Set();
+        for(let row = 0; row < 9; ++row){
+            const value = board[row][col];
+            if(value === "") continue;
+            if(values.has(value)) return false;
+            else values.add(value);
+        }
+    }
     return true;
 }
