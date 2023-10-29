@@ -43,13 +43,7 @@ export default function GameBoard(){
     }
     const onGridNumberClick = (value) => {
         const newBoard = [...board];
-        const previousValue = newBoard[selectedSquare.y][selectedSquare.x];
         newBoard[selectedSquare.y][selectedSquare.x] = value;
-        if(!validateBoard(newBoard)){
-            newBoard[selectedSquare.y][selectedSquare.x] = previousValue;
-            alert("Movimiento inválido");
-            return;
-        }
         setBoard(newBoard);
         setSelectedSquare({x: 0, y: 0});
         setNumbersGridVisible(false);
