@@ -1,4 +1,4 @@
-import { validateBoard } from "../features/solver";
+import { reduceByColumns, reduceByRows, reduceBySquares, validateBoard } from "../features/solver";
 import Square from "./Square";
 import { useState } from "react";
 
@@ -44,6 +44,9 @@ export default function GameBoard(){
     const onGridNumberClick = (value) => {
         const newBoard = [...board];
         newBoard[selectedSquare.y][selectedSquare.x] = value;
+        reduceByRows(newBoard);
+        reduceByColumns(newBoard);
+        reduceBySquares(newBoard);
         setBoard(newBoard);
         setSelectedSquare({x: 0, y: 0});
         setNumbersGridVisible(false);
