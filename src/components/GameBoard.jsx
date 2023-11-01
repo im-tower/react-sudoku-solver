@@ -1,19 +1,9 @@
-import { reduceByColumns, reduceByRows, reduceBySquares, validateBoard } from "../features/solver";
+import { copyBoard, validateBoard } from "../features/solver";
 import Square from "./Square";
 import { useState } from "react";
 
-export default function GameBoard(){
-    const [board, setBoard] = useState([
-        ["", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", ""]
-    ]);
+export default function GameBoard({board, setBoard}){
+
     const [selectedSquare, setSelectedSquare] = useState({x: 0, y: 0});
     const [numbers_grid_visible, setNumbersGridVisible] = useState(false);
     const [numbers_grid_position, setNumbersGridPosition] = useState({
@@ -32,8 +22,8 @@ export default function GameBoard(){
             y: squareY
         });
         const newValidNumbers = [false, false, false, false, false, false, false, false, false];
+        const newBoard = copyBoard(board);
         for(let i = 1; i <= 9; i++){
-            const newBoard = [...board];
             const previousValue = newBoard[squareY][squareX];
             newBoard[squareY][squareX] = i;
             if(validateBoard(newBoard)) newValidNumbers[i - 1] = true;
@@ -42,11 +32,8 @@ export default function GameBoard(){
         setValidNumbers(newValidNumbers);
     }
     const onGridNumberClick = (value) => {
-        const newBoard = [...board];
+        const newBoard = copyBoard(board);
         newBoard[selectedSquare.y][selectedSquare.x] = value;
-        reduceByRows(newBoard);
-        reduceByColumns(newBoard);
-        reduceBySquares(newBoard);
         setBoard(newBoard);
         setSelectedSquare({x: 0, y: 0});
         setNumbersGridVisible(false);

@@ -101,10 +101,10 @@
   }
 }
 
-.app-container{
+.game-ui-container{
   display: grid;
   align-items: center;
-  justify-content: center;
+  justify-items: center;
   grid-template-rows: auto 100px;
 }
 

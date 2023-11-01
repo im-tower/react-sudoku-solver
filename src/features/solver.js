@@ -119,3 +119,50 @@ export function reduceBySquares(board){
     }
     return board;
 }
+
+export function solveBoard(board){
+    let auxBoard = copyBoard(board);
+    let lastBoard = null;
+    do{
+        lastBoard = copyBoard(auxBoard);
+        auxBoard = reduceByRows(auxBoard);
+        auxBoard = reduceByColumns(auxBoard);
+        auxBoard = reduceBySquares(auxBoard);
+    }while(!equals(auxBoard, lastBoard));
+    const reducedBoard = copyBoard(auxBoard);
+    if(!validateBoard(reducedBoard)) return null;
+    if(!hasEmptyCells(reducedBoard)) return reducedBoard;
+    for(let row = 0; row < 9; ++row){
+        for(let col = 0; col < 9; ++col){
+            if(reducedBoard[row][col] !== "") continue;
+            for(let value = 1; value <= 9; ++value){
+                reducedBoard[row][col] = value;
+                const solution = solveBoard(reducedBoard);
+                if(solution !== null) return solution;
+            }
+            return null;
+        }
+    }
+}
+
+export function copyBoard(board){
+    return board.map(row => row.slice());
+}
+
+export function equals(board1, board2){
+    for(let row = 0; row < 9; ++row){
+        for(let col = 0; col < 9; ++col){
+            if(board1[row][col] !== board2[row][col]) return false;
+        }
+    }
+    return true;
+}
+
+export function hasEmptyCells(board){
+    for(let row = 0; row < 9; ++row){
+        for(let col = 0; col < 9; ++col){
+            if(board[row][col] === "") return true;
+        }
+    }
+    return false;
+}
