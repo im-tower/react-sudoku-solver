@@ -120,7 +120,7 @@ export function reduceBySquares(board){
     return board;
 }
 
-export function solveBoard(board){
+export function solveBoard(board, lastRow = 0, lastCol = 0){
     let auxBoard = copyBoard(board);
     let lastBoard = null;
     do{
@@ -131,14 +131,14 @@ export function solveBoard(board){
     }while(!equals(auxBoard, lastBoard));
     const reducedBoard = auxBoard;
     if(!validateBoard(reducedBoard)) return null;
-    for(let row = 0; row < 9; ++row){
-        for(let col = 0; col < 9; ++col){
+    for(let row = lastRow; row < 9; ++row){
+        for(let col = (row === lastRow ? lastCol : 0); col < 9; ++col){
             if(reducedBoard[row][col] === ""){
                 const values = getPossibleValues(reducedBoard, row, col);
                 values.sort(() => Math.random() - 0.5);
                 for(let value of values){
                     reducedBoard[row][col] = value;
-                    const solution = solveBoard(reducedBoard);
+                    const solution = solveBoard(reducedBoard, row, col);
                     if(solution !== null) return solution;
                 }
                 return null;
