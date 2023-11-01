@@ -124,25 +124,29 @@ export function solveBoard(board){
     let auxBoard = copyBoard(board);
     let lastBoard = null;
     do{
-        lastBoard = copyBoard(auxBoard);
+        lastBoard = auxBoard;
         auxBoard = reduceByRows(auxBoard);
         auxBoard = reduceByColumns(auxBoard);
         auxBoard = reduceBySquares(auxBoard);
     }while(!equals(auxBoard, lastBoard));
-    const reducedBoard = copyBoard(auxBoard);
+    const reducedBoard = auxBoard;
     if(!validateBoard(reducedBoard)) return null;
-    if(!hasEmptyCells(reducedBoard)) return reducedBoard;
     for(let row = 0; row < 9; ++row){
         for(let col = 0; col < 9; ++col){
-            if(reducedBoard[row][col] !== "") continue;
-            for(let value = 1; value <= 9; ++value){
-                reducedBoard[row][col] = value;
-                const solution = solveBoard(reducedBoard);
-                if(solution !== null) return solution;
+            if(reducedBoard[row][col] === ""){
+                const values = getPossibleValues(reducedBoard, row, col);
+                values.sort(() => Math.random() - 0.5);
+                for(let value of values){
+                    reducedBoard[row][col] = value;
+                    const solution = solveBoard(reducedBoard);
+                    if(solution !== null) return solution;
+                }
+                return null;
             }
-            return null;
         }
     }
+    return reducedBoard;
+
 }
 
 export function copyBoard(board){
@@ -165,4 +169,33 @@ export function hasEmptyCells(board){
         }
     }
     return false;
+}
+
+export function getPossibleValues(board, row, col){
+    let forbbidenValues = new Set();
+    for(let i = 0; i < 9; ++i){
+        if(board[row][i] !== "" && i !== col){
+            forbbidenValues.add(board[row][i]);
+        }
+    }
+    for(let i = 0; i < 9; ++i){
+        if(board[i][col] !== "" && i !== row){
+            forbbidenValues.add(board[i][col]);
+        }
+    }
+    const square = parseInt(col/3) + parseInt(row/3)*3;
+    const squareBegin = (square%3)*3;
+    const squareEnd = squareBegin + 3;
+    for(let x = squareBegin; x < squareEnd; ++x){
+        for(let y = parseInt(square/3)*3; y < parseInt(square/3)*3+3; ++y){
+            if(board[y][x] !== "" && x !== col && y !== row){
+                forbbidenValues.add(board[y][x]);
+            }
+        }
+    }
+    const possibleValues = [];
+    for(let i = 1; i <= 9; ++i){
+        if(!forbbidenValues.has(i)) possibleValues.push(i);
+    }
+    return possibleValues;
 }
