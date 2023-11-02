@@ -30,7 +30,6 @@ export default function GameUI(){
 
     const onSolve = () => {
         const newBoard = solveBoard(copyBoard(board));
-        console.log("New board: ", newBoard);
         setBoard(newBoard);
     }
 

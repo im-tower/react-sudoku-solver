@@ -121,14 +121,7 @@ export function reduceBySquares(board){
 }
 
 export function solveBoard(board, lastRow = 0, lastCol = 0){
-    let auxBoard = copyBoard(board);
-    let lastBoard = null;
-    do{
-        lastBoard = auxBoard;
-        auxBoard = reduceByRows(auxBoard);
-        auxBoard = reduceByColumns(auxBoard);
-        auxBoard = reduceBySquares(auxBoard);
-    }while(!equals(auxBoard, lastBoard));
+    let auxBoard = board;
     const reducedBoard = auxBoard;
     if(!validateBoard(reducedBoard)) return null;
     for(let row = lastRow; row < 9; ++row){
@@ -140,13 +133,13 @@ export function solveBoard(board, lastRow = 0, lastCol = 0){
                     reducedBoard[row][col] = value;
                     const solution = solveBoard(reducedBoard, row, col);
                     if(solution !== null) return solution;
+                    reducedBoard[row][col] = "";
                 }
                 return null;
             }
         }
     }
     return reducedBoard;
-
 }
 
 export function copyBoard(board){
