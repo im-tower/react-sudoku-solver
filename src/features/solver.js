@@ -137,7 +137,8 @@ export function getPossibleValues(board, row, col){
 export function reduceBoard(board, possibleValues){
     const reducers = [
         reduceByRows,
-        reduceByColumns
+        reduceByColumns,
+        reduceBySquares
     ];
     do{
        let hasChanged = false;
@@ -184,6 +185,33 @@ export function reduceByColumns(board, possibleValues){
             const { row, col } = emptyCell;
             valuesInCol.forEach((isInCol, index) => {
                 if(!isInCol){
+                    possibleValues[row][col].add(index + 1);
+                    possibleValuesModified = true;
+                }
+            });
+        }
+    }
+    return possibleValuesModified;
+}
+
+export function reduceBySquares(board, possibleValues){
+    let possibleValuesModified = false;
+    for(let square = 0; square < 9; ++square){
+        const squareBegin = (square%3)*3;
+        const squareEnd = squareBegin + 3;
+        const valuesInSquare = Array(9).fill(false);
+        const emptyCells = [];
+        for(let x = squareBegin; x < squareEnd; ++x){
+            for(let y = parseInt(square/3)*3; y < parseInt(square/3)*3+3; ++y){
+                const value = board[y][x];
+                if(value === "") emptyCells.push({row, col});
+                else valuesInSquare[value-1] = true;
+            }
+        }
+        for(let emptyCell of emptyCells){
+            const { row, col } = emptyCell;
+            valuesInSquare.forEach((isInSquare, index) => {
+                if(!isInSquare){
                     possibleValues[row][col].add(index + 1);
                     possibleValuesModified = true;
                 }
