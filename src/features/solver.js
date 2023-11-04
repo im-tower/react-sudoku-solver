@@ -140,8 +140,8 @@ export function reduceBoard(board, possibleValues){
         reduceByColumns,
         reduceBySquares
     ];
+    let hasChanged = false
     do{
-       let hasChanged = false;
        for(let reducer of reducers){
             hasChanged = reducer(board, possibleValues);
        }
