@@ -57,7 +57,7 @@ export function validateColumns(board){
 
 let possibleValuesBoard = null;
 export function solveBoard(board, lastRow = 0, lastCol = 0){
-    if(possibleValuesBoard === null) possibleValuesBoard = reduceBoard(board);
+    if(possibleValuesBoard === null) possibleValuesBoard = Array(9).fill(null).map(() => Array(9).fill(new Set()));
     let auxBoard = board;
     const reducedBoard = auxBoard;
     if(!validateBoard(reducedBoard)) return null;
@@ -134,8 +134,8 @@ export function getPossibleValues(board, row, col){
     return possibleValues;
 }
 
-export function reduceBoard(board){
-    let possibleValues = Array(9).fill(null).map(() => Array(9).fill(new Set()));
+export function reduceBoard(board, possibleValues){
+    
     
 }
 
