@@ -114,6 +114,7 @@ export default function GameBoard({board, setBoard}){
                 {
                     validNumbers.map((available, index) => <button onClick={() => onGridNumberClick(index+1)} key={index+1} disabled={!available}>{index+1}</button>)
                 }
+                <button onClick={() => onGridNumberClick("")} style={{backgroundColor: 'red', color: 'white'}}>X</button>
             </div>
         </div>
     );
