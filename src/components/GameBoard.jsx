@@ -66,6 +66,13 @@ export default function GameBoard({board, setBoard}){
             setSelectedSquare({x: newX, y: selectedSquare.y});
             const newXPosition = isRight ? numbers_grid_position.x-50*8 : numbers_grid_position.x + 50;
             setNumbersGridPosition({...numbers_grid_position, x: newXPosition});
+        }else if(key === "1" || key === "2" || key === "3" || key === "4" || key === "5" || key === "6" || key === "7" || key === "8" || key === "9"){
+            if(!validNumbers[parseInt(key)-1]) return;
+            const newBoard = copyBoard(board);
+            newBoard[selectedSquare.y][selectedSquare.x] = parseInt(key);
+            setBoard(newBoard);
+            setSelectedSquare({x: -1, y: -1});
+            setNumbersGridVisible(false);
         }
     }
     return(
