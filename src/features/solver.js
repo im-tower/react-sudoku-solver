@@ -57,7 +57,7 @@ export function validateColumns(board){
 
 let possibleValuesBoard = null;
 export function solveBoard(board, lastRow = 0, lastCol = 0){
-    if(possibleValuesBoard === null) possibleValuesBoard = Array(9).fill(null).map(() => Array(9).fill(new Set()));
+    if(possibleValuesBoard === null) possibleValuesBoard = Array(9).fill(null).map(() => Array(9).fill(null).map(() => new Set([1, 2, 3, 4, 5, 6, 7, 8, 9])));
     let auxBoard = board;
     const reducedBoard = auxBoard;
     if(!validateBoard(reducedBoard)) return null;
@@ -142,9 +142,11 @@ export function reduceBoard(board, possibleValues){
     ];
     let hasChanged = false
     do{
-       for(let reducer of reducers){
-            hasChanged = reducer(board, possibleValues);
-       }
+        hasChanged = false;
+        for(let reducer of reducers){
+            if(!hasChanged) hasChanged = reducer(board, possibleValues);
+            else reducer(board, possibleValues);
+        }
     }while(hasChanged);
 }
 
@@ -156,7 +158,10 @@ export function reduceByRows(board, possibleValues){
         for(let col = 0; col < 9; ++col){
             const value = board[row][col];
             if(value === "") emptyCells.push({row, col});
-            else valuesInRow[value-1] = true;
+            else{
+                for(let i = 1; i <= 9; ++i) possibleValues[row][col].delete(i);
+                valuesInRow[value-1] = true;
+            }
         }
         for(let emptyCell of emptyCells){
             const { row, col } = emptyCell;
@@ -173,13 +178,15 @@ export function reduceByRows(board, possibleValues){
                 if(possibleValues[row][col].has(index + 1)){
                     let uniqueValue = true;
                     emptyCells.forEach(anotherEmptyCell => {
-                        if(emptyCell !== anotherEmptyCell){
+                        if(emptyCell.row !== anotherEmptyCell.row || emptyCell.col !== anotherEmptyCell.col){
                             if(possibleValues[anotherEmptyCell.row][anotherEmptyCell.col].has(index + 1)) uniqueValue = false;
                         }
                     });
                     if(uniqueValue){
                         for(let i = 1; i <= 9; ++i){
-                            if(i !== index + 1) possibleValues[row][col].delete();
+                            if(i !== index + 1){
+                                possibleValues[row][col].delete(i);
+                            }
                         }
                     }
                 }
@@ -208,6 +215,26 @@ export function reduceByColumns(board, possibleValues){
                 }
             });
         }
+        for(let emptyCell of emptyCells){
+            const { row, col } = emptyCell;
+            valuesInCol.forEach((isInCol, index) => {
+                if(possibleValues[row][col].has(index + 1)){
+                    let uniqueValue = true;
+                    emptyCells.forEach(anotherEmptyCell => {
+                        if(emptyCell.row !== anotherEmptyCell.row || emptyCell.col !== anotherEmptyCell.col){
+                            if(possibleValues[anotherEmptyCell.row][anotherEmptyCell.col].has(index + 1)) uniqueValue = false;
+                        }
+                    });
+                    if(uniqueValue){
+                        for(let i = 1; i <= 9; ++i){
+                            if(i !== index + 1){
+                                possibleValues[row][col].delete(i);
+                            }
+                        }
+                    }
+                }
+            });
+        }
     }
     return possibleValuesModified;
 }
@@ -222,7 +249,7 @@ export function reduceBySquares(board, possibleValues){
         for(let x = squareBegin; x < squareEnd; ++x){
             for(let y = parseInt(square/3)*3; y < parseInt(square/3)*3+3; ++y){
                 const value = board[y][x];
-                if(value === "") emptyCells.push({row, col});
+                if(value === "") emptyCells.push({row: y, col: x});
                 else valuesInSquare[value-1] = true;
             }
         }
@@ -232,6 +259,26 @@ export function reduceBySquares(board, possibleValues){
                 if(isInSquare && possibleValues[row][col].has(index + 1)){
                     possibleValues[row][col].delete(index + 1);
                     possibleValuesModified = true;
+                }
+            });
+        }
+        for(let emptyCell of emptyCells){
+            const { row, col } = emptyCell;
+            valuesInSquare.forEach((isInSquare, index) => {
+                if(possibleValues[row][col].has(index + 1)){
+                    let uniqueValue = true;
+                    emptyCells.forEach(anotherEmptyCell => {
+                        if(emptyCell.row !== anotherEmptyCell.row || emptyCell.col !== anotherEmptyCell.col){
+                            if(possibleValues[anotherEmptyCell.row][anotherEmptyCell.col].has(index + 1)) uniqueValue = false;
+                        }
+                    });
+                    if(uniqueValue){
+                        for(let i = 1; i <= 9; ++i){
+                            if(i !== index + 1){
+                                possibleValues[row][col].delete(i);
+                            }
+                        }
+                    }
                 }
             });
         }
