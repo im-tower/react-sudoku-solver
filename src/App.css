@@ -117,3 +117,20 @@
   position: absolute;
   border: gray 3px solid;
 }
+
+.game-ui-buttons{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 50px;
+}
+
+.non-soluble{
+  color: white;
+  font-size: large;
+}
+
+.solutions-counter{
+  color: white;
+  font-size: large;
+}
