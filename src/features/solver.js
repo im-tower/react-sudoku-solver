@@ -167,6 +167,24 @@ export function reduceByRows(board, possibleValues){
                 }
             });
         }
+        for(let emptyCell of emptyCells){
+            const { row, col } = emptyCell;
+            valuesInRow.forEach((isInRow, index) => {
+                if(possibleValues[row][col].has(index + 1)){
+                    let uniqueValue = true;
+                    emptyCells.forEach(anotherEmptyCell => {
+                        if(emptyCell !== anotherEmptyCell){
+                            if(possibleValues[anotherEmptyCell.row][anotherEmptyCell.col].has(index + 1)) uniqueValue = false;
+                        }
+                    });
+                    if(uniqueValue){
+                        for(let i = 1; i <= 9; ++i){
+                            if(i !== index + 1) possibleValues[row][col].delete();
+                        }
+                    }
+                }
+            });
+        }
     }
     return possibleValuesModified;
 }
