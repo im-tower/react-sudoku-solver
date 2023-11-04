@@ -45,7 +45,7 @@ export default function GameBoard({board, setBoard}){
                     <div key={i} className="board-row">
                         {
                             Array.from(Array(9).keys()).map((j) => 
-                                <Square key={j} value={board[i][j]} onClick={({clientX, clientY}) => onSquareClick(clientX, clientY, j, i)} />
+                                <Square key={j} value={board[i][j]} onClick={({clientX, clientY}) => onSquareClick(clientX, clientY, j, i)} isSelected={selectedSquare.y === i && selectedSquare.x === j} />
                             )
                         }
                     </div>    

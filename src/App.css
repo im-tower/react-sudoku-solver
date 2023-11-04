@@ -49,6 +49,11 @@
   padding: 0;
 }
 
+.square--selected{
+  border-color: #5a62ff;
+  border-width: 2px;
+}
+
 .square:nth-child(3n){
   border-right: black 2px solid;
 }

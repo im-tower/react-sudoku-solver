@@ -1,7 +1,7 @@
-export default function Square({value, onClick}) {
+export default function Square({value, onClick, isSelected}) {
 
     return (
-        <button className="square" onClick={onClick}>
+        <button className={"square" + (isSelected ? " square--selected" : "")} onClick={onClick}>
             {
                 value === "\n" ? "" : value
             }
