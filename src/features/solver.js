@@ -58,13 +58,17 @@ export function validateColumns(board){
 let possibleValuesBoard = null;
 export function solveBoard(board, lastRow = 0, lastCol = 0){
     if(possibleValuesBoard === null) possibleValuesBoard = Array(9).fill(null).map(() => Array(9).fill(null).map(() => new Set([1, 2, 3, 4, 5, 6, 7, 8, 9])));
-    let auxBoard = board;
-    const reducedBoard = auxBoard;
-    if(!validateBoard(reducedBoard)) return null;
+    const rollback = reduceBoard(board, possibleValuesBoard);
+    const reducedBoard = board;
+    if(!validateBoard(reducedBoard)){
+        rollback(board);
+        possibleValuesBoard = Array(9).fill(null).map(() => Array(9).fill(null).map(() => new Set([1, 2, 3, 4, 5, 6, 7, 8, 9])));
+        return null;
+    }
     for(let row = lastRow; row < 9; ++row){
         for(let col = (row === lastRow ? lastCol : 0); col < 9; ++col){
             if(reducedBoard[row][col] === ""){
-                const values = getPossibleValues(reducedBoard, row, col);
+                const values = Array.from(possibleValuesBoard[row][col]);
                 values.sort(() => Math.random() - 0.5);
                 for(let value of values){
                     reducedBoard[row][col] = value;
@@ -75,6 +79,8 @@ export function solveBoard(board, lastRow = 0, lastCol = 0){
                 if(lastRow === 0 && lastCol === 0){
                     possibleValuesBoard = null;
                 }
+                rollback(board);
+                possibleValuesBoard = Array(9).fill(null).map(() => Array(9).fill(null).map(() => new Set([1, 2, 3, 4, 5, 6, 7, 8, 9])));
                 return null;
             }
         }
@@ -105,35 +111,6 @@ export function hasEmptyCells(board){
     return false;
 }
 
-export function getPossibleValues(board, row, col){
-    let forbbidenValues = new Set();
-    for(let i = 0; i < 9; ++i){
-        if(board[row][i] !== "" && i !== col){
-            forbbidenValues.add(board[row][i]);
-        }
-    }
-    for(let i = 0; i < 9; ++i){
-        if(board[i][col] !== "" && i !== row){
-            forbbidenValues.add(board[i][col]);
-        }
-    }
-    const square = parseInt(col/3) + parseInt(row/3)*3;
-    const squareBegin = (square%3)*3;
-    const squareEnd = squareBegin + 3;
-    for(let x = squareBegin; x < squareEnd; ++x){
-        for(let y = parseInt(square/3)*3; y < parseInt(square/3)*3+3; ++y){
-            if(board[y][x] !== "" && x !== col && y !== row){
-                forbbidenValues.add(board[y][x]);
-            }
-        }
-    }
-    const possibleValues = [];
-    for(let i = 1; i <= 9; ++i){
-        if(!forbbidenValues.has(i)) possibleValues.push(i);
-    }
-    return possibleValues;
-}
-
 export function reduceBoard(board, possibleValues){
     const reducers = [
         reduceByRows,
@@ -148,6 +125,21 @@ export function reduceBoard(board, possibleValues){
             else reducer(board, possibleValues);
         }
     }while(hasChanged);
+    let rollbacks = [];
+    for(let row = 0; row < 9; ++row){
+        for(let col = 0; col < 9; ++col){
+            if(possibleValues[row][col].size === 1){
+                board[row][col] = possibleValues[row][col].keys().next().value;
+                rollbacks.push({row,col})
+            }
+            possibleValues[row][col].delete(board[row][col]);
+        }
+    }
+    return (myBoard) => {
+        rollbacks.forEach(({row,col}) => {
+            myBoard[row][col] = "";
+        });
+    }
 }
 
 export function reduceByRows(board, possibleValues){
