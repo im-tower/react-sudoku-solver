@@ -161,8 +161,8 @@ export function reduceByRows(board, possibleValues){
         for(let emptyCell of emptyCells){
             const { row, col } = emptyCell;
             valuesInRow.forEach((isInRow, index) => {
-                if(!isInRow){
-                    possibleValues[row][col].add(index + 1);
+                if(isInRow && possibleValues[row][col].has(index + 1)){
+                    possibleValues[row][col].delete(index + 1);
                     possibleValuesModified = true;
                 }
             });
@@ -184,8 +184,8 @@ export function reduceByColumns(board, possibleValues){
         for(let emptyCell of emptyCells){
             const { row, col } = emptyCell;
             valuesInCol.forEach((isInCol, index) => {
-                if(!isInCol){
-                    possibleValues[row][col].add(index + 1);
+                if(isInCol && possibleValues[row][col].has(index + 1)){
+                    possibleValues[row][col].delete(index + 1);
                     possibleValuesModified = true;
                 }
             });
@@ -211,8 +211,8 @@ export function reduceBySquares(board, possibleValues){
         for(let emptyCell of emptyCells){
             const { row, col } = emptyCell;
             valuesInSquare.forEach((isInSquare, index) => {
-                if(!isInSquare){
-                    possibleValues[row][col].add(index + 1);
+                if(isInSquare && possibleValues[row][col].has(index + 1)){
+                    possibleValues[row][col].delete(index + 1);
                     possibleValuesModified = true;
                 }
             });
