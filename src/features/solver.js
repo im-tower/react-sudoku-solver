@@ -135,8 +135,10 @@ export function getPossibleValues(board, row, col){
 }
 
 export function reduceBoard(board, possibleValues){
-    
-    
+    do{
+       let hasChanged = false;
+       hasChanged = reduceByRows(board, possibleValues);
+    }while(hasChanged);
 }
 
 export function reduceByRows(board, possibleValues){
