@@ -6,7 +6,7 @@ import { useEffect } from "react";
 export default function GameUI(){
 
     const [selectedBoard, setBoard] = useState([
-        ["1", "1", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", "", ""],
