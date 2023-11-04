@@ -135,9 +135,15 @@ export function getPossibleValues(board, row, col){
 }
 
 export function reduceBoard(board, possibleValues){
+    const reducers = [
+        reduceByRows,
+        reduceByColumns
+    ];
     do{
        let hasChanged = false;
-       hasChanged = reduceByRows(board, possibleValues);
+       for(let reducer of reducers){
+            hasChanged = reducer(board, possibleValues);
+       }
     }while(hasChanged);
 }
 
@@ -164,3 +170,25 @@ export function reduceByRows(board, possibleValues){
     return possibleValuesModified;
 }
 
+export function reduceByColumns(board, possibleValues){
+    let possibleValuesModified = false;
+    for(let col = 0; col < 9; ++col){
+        const valuesInCol = Array(9).fill(false);
+        const emptyCells = [];
+        for(let row = 0; row < 9; ++row){
+            const value = board[row][col];
+            if(value === "") emptyCells.push({row, col});
+            else valuesInCol[value-1] = true;
+        }
+        for(let emptyCell of emptyCells){
+            const { row, col } = emptyCell;
+            valuesInCol.forEach((isInCol, index) => {
+                if(!isInCol){
+                    possibleValues[row][col].add(index + 1);
+                    possibleValuesModified = true;
+                }
+            });
+        }
+    }
+    return possibleValuesModified;
+}
